@@ -1,7 +1,12 @@
- const express = require("express")
- const mongoose = require("mongoose")
- const path = require("path")
- const {allRoutes} = require("./router/router")
+const express = require("express")
+const mongoose = require("mongoose")
+const path = require("path")
+const {allRoutes} = require("./router/router")
+const morgan = require("morgan")
+const swaggerUI = require("swagger-ui-express")
+const swaggerJSDOC = require("swagger-jsdoc")
+const createError = require("http-errors")
+const { description } = require("@hapi/joi/lib/schemas")
  module.exports =  class application{
     #app = express();
     #DB_URI;
@@ -18,9 +23,25 @@
     }
 
     configApplication(){
+        this.#app.use(morgan("dev"))
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extends : true}))
         this.#app.use(express.static(path.join(__dirname , '..', 'public')))
+        this.#app.use("/apis" , swaggerUI.serve , swaggerUI.setup(swaggerJSDOC({
+            swaggerDefinition : {
+                info :{
+                    title : "store apis",
+                    version : "2.0.0.0",
+                    description : "test apis for store project"
+                },
+                servers : [
+                    {
+                        url : "http://localhost:5000"
+                    }
+                ]
+            },
+            apis : ["./app/router/*/*.js"]
+        })))
 
     }
 
@@ -39,24 +60,32 @@
 
         console.log(error?.message ?? "Failed to connect to DB")
     })
-      
+    mongoose.connection.on("disconnected" , ()=>{
+        console.log("mongoose connection disconnected! ")
+    })
+    
+    process.on("SIGINT" , async()=> {
+        await mongoose.connection.close();
+        process.exit(0)
+    })
+  
     }
     createRoutes(){
         this.#app.use(allRoutes);
     }
     errorHandling(){
         this.#app.use((req , res ,next)=>{
-            return res.status(404).json({
-                statusCode : 404 , 
-                message : "page not found :)"
-            })
+            next(createError(404 , "page not found")) 
         })
         this.#app.use((error , req , res, next)=>{
-            const statusCode = error.status || 500;
-            const message = error.message || "Internal server error";
+            const serverError = createError(500 , "internal server error")
+            const statusCode = error.status || serverError.status;
+            const message = error.message || serverError.message;
             return res.status(statusCode).json({
-                    statusCode , 
-                    message 
+                    errors : {
+                         statusCode , 
+                         message 
+                    }
             })
         })
     }
