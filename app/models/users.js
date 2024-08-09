@@ -1,16 +1,16 @@
 const { type } = require("express/lib/response");
-const { Schema, default: mongoose, Types } = require("mongoose");
+const { default: mongoose } = require("mongoose");
 
-const Schema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     firstName : {type : String},
     lastName : {type : String},
     userName : {type : String ,  required : true , lownercase : true},
-    phone : {type : String},
+    mobile : {type : String},
     email : {type : String , lownercase : true},
     password : {type : String},
     otp : {type : Object , default : {
         code : 0,
-        expires :0
+        expiresIn :new Date().getTime() + 12000
     }},
     bills: { type : [] , default : []},
     discount : {type : Number , default : 0},
@@ -19,5 +19,5 @@ const Schema = new mongoose.Schema({
 })
 
 module.exports = {
-    userModel : mongoose.model("user" , Schema)
+    userModel : mongoose.model("user" , userSchema)
 }

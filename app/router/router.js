@@ -1,5 +1,5 @@
 const { HomeRoutes } = require("./api");
-const { authRoutes } = require("./user/auth/auth");
+const { authRoutes } = require("./user/auth");
 
 const router = require("express").Router();
 
