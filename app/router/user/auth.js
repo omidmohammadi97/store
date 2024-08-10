@@ -10,7 +10,7 @@ const router = require("express").Router();
 
 /**
  * @swagger
- * /user/login:
+ * /user/getOtp:
  *   post:
  *     summary: Log in user to user panel with phone number
  *     tags: 
@@ -33,8 +33,40 @@ const router = require("express").Router();
  *       500:
  *         description: Internal server error
  */
+/**
+ * @swagger
+ * /user/checkOtp:
+ *   post:
+ *     summary: check otp that sent to user mobile
+ *     tags: 
+ *       - Auth
+ *     description: check otp
+ *     parameters: 
+ *       - name: mobile
+ *         in: formData
+ *         description: fa_IR phone number
+ *         required: true
+ *         schema:
+ *           type: string
+ *       - name: code
+ *         in: formData
+ *         description: otp
+ *         required: true
+ *         schema:
+ *           type: number
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 
-router.post("/login", authController.login);
+router.post("/getOtp", authController.getOtp);
+router.post("/checkOtp", authController.checkOtp);
 
 module.exports = {
     authRoutes: router

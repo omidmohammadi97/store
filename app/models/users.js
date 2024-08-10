@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
     password : {type : String},
     otp : {type : Object , default : {
         code : 0,
-        expiresIn :new Date().getTime() + 12000
+        expiresIn : 0
     }},
     bills: { type : [] , default : []},
     discount : {type : Number , default : 0},

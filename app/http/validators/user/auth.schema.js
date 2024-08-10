@@ -1,10 +1,13 @@
 const Joi= require("@hapi/joi");
 
-const authSchema = Joi.object({
-    // email : Joi.string().email().required().lowercase().trim().error(new Error("فرمت وارد شده صحیح نمیباشد")),
-    // password : Joi.string().min(6).max(16).trim().required().error(new Error("پسورد باید بین 6 تا 16 کاراکتر باشد"))
+const getOtpSchema = Joi.object({
     mobile : Joi.string().length(11).pattern(/^09[0-9]{9}$/).error(new Error("please enter  currect format for mobile!"))
 })
+const checkOtpSchema = Joi.object({
+    mobile : Joi.string().length(11).pattern(/^09[0-9]{9}$/).error(new Error("please enter  currect format for mobile!")),
+    code : Joi.string().min(4).max(6).error(new Error("code is not valid"))
+})
 module.exports={
-    authSchema
+    getOtpSchema,
+    checkOtpSchema
 }
