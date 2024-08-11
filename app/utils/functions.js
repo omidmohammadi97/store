@@ -1,7 +1,7 @@
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const { userModel } = require("../models/users");
-const { SECRET_KEY } = require("./constans");
+const { ACCESS_TOKEN_SECRET_KEY } = require("./constans");
 function randomNumber(){
     return Math.floor(Math.random() * 9000) + 10000
 }
@@ -13,13 +13,12 @@ async function  signAccessToken(userId){
         console.log("YSER" , user)
         const payload = {
             mobile : user.mobile,
-            userId : user.id
         };
         const secret ="";
         const options = {
             expiresIn : "1h"
         };
-        jwt.sign(payload , SECRET_KEY , options , (err , token)=>{
+        jwt.sign(payload , ACCESS_TOKEN_SECRET_KEY , options , (err , token)=>{
             if(err) reject(createError(500 , " internal server error" ))
             resolve(token)
         })
