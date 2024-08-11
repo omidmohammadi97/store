@@ -64,9 +64,35 @@ const router = require("express").Router();
  *       500:
  *         description: Internal server error
  */
+/**
+ * @swagger
+ * /user/refreshToken:
+ *   post:
+ *     summary: create resfresh token for get new token and refresh token
+ *     tags: 
+ *       - Auth
+ *     description: refresh Token
+ *     parameters: 
+ *       - name: refreshToken
+ *         in: body
+ *         description: refreshToken
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
 
 router.post("/getOtp", authController.getOtp);
 router.post("/checkOtp", authController.checkOtp);
+router.post("/refreshtoken", authController.refreshToken);
 
 module.exports = {
     authRoutes: router

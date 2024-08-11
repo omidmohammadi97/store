@@ -1,7 +1,7 @@
 const controller = require("../../controllers")
 const {userModel} = require("../../../../models/users")
 const {checkOtpSchema , getOtpSchema} = require("../../../validators/user/auth.schema")
-const {randomNumber , signAccessToken} = require("../../../../utils/functions")
+const {randomNumber , signAccessToken, VerifyRefreshToken, signRefreshToken} = require("../../../../utils/functions")
 const { EXPIRESIN , USER_ROLE } = require("../../../../utils/constans")
 const createError = require("http-errors")
 module.exports = new class authConrtoller extends controller{
@@ -26,6 +26,23 @@ module.exports = new class authConrtoller extends controller{
             next(error)
          }
    }
+   refreshToken =async (req , res ,next)=> {
+      try {
+         const {refreshToken} = req.body;
+         const mobile = await VerifyRefreshToken(refreshToken);
+         const user = await userModel.findOne({mobile});
+         const accessToken = await signAccessToken(user._id);
+         const newRefreshToken = await signRefreshToken(user._id);
+         return res.json({
+            data : {
+               accessToken,
+               refreshToken  : newRefreshToken
+            }
+         })
+       } catch (error) {
+          next(error)
+       }
+ }
 
     checkOtp = async (req , res, next)=>{
        try {
@@ -39,9 +56,11 @@ module.exports = new class authConrtoller extends controller{
          const now = Date.now();
          if(user.otp.expiresIn < now) throw createError(401, "The code has expired");
          const accessToken = await signAccessToken(user._id)
+         const refreshToken = await signRefreshToken(user._id)
          return res.json({
             data : {
-               accessToken
+               accessToken,
+               refreshToken
             }
          })
        }
