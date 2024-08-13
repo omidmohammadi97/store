@@ -16,6 +16,7 @@ const { description } = require("@hapi/joi/lib/schemas")
         this.#DB_URI = DB_URI;
         this.configApplication();
         this.connectToMongoDB();
+        this.init_redis();
         this.createServer();
         this.createRoutes();
         this.errorHandling();
@@ -69,6 +70,9 @@ const { description } = require("@hapi/joi/lib/schemas")
         process.exit(0)
     })
   
+    }
+    init_redis(){
+        require("./utils/init_redis")
     }
     createRoutes(){
         this.#app.use(allRoutes);
