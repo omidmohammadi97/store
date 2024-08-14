@@ -2,7 +2,7 @@ const controller = require("../../controllers")
 const {userModel} = require("../../../../models/users")
 const {checkOtpSchema , getOtpSchema} = require("../../../validators/user/auth.schema")
 const {randomNumber , signAccessToken, VerifyRefreshToken, signRefreshToken} = require("../../../../utils/functions")
-const { EXPIRESIN , USER_ROLE } = require("../../../../utils/constans")
+const { USER_ROLE } = require("../../../../utils/constans")
 const createError = require("http-errors")
 module.exports = new class authConrtoller extends controller{
   
@@ -72,7 +72,7 @@ module.exports = new class authConrtoller extends controller{
    saveUser = async (mobile , code) => { 
       let otp = {
          code ,
-         expiresIn : EXPIRESIN
+         expiresIn : new Date.now() + 120000
       }
       console.log("otp" , otp)
       const user = await this.checkExistUser(mobile)
@@ -84,7 +84,7 @@ module.exports = new class authConrtoller extends controller{
       return !!(await userModel.create({
          mobile ,
          otp,
-         Roles: [USER_ROLE]
+         Roles: USER_ROLE.USER
       }))
       
    }
