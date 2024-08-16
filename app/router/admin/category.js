@@ -6,7 +6,7 @@ const router = require("express").Router();
  * tags:
  *   - name: Admin Categories
  *     description: Admin pannel routes and data for categories
- */
+*/
 /**
  * @swagger
  * /admin/category/create:
@@ -37,7 +37,8 @@ const router = require("express").Router();
  *         description: Unauthorized
  *       500:
  *         description: Internal server error
- */
+*/
+router.post("/create" , CategoryController.addCategory)
 /**
  * @swagger
  * /admin/category/update:
@@ -68,10 +69,10 @@ const router = require("express").Router();
  *         description: Unauthorized
  *       500:
  *         description: Internal server error
- */
+*/
 
+router.post("/update" , CategoryController.updateCategory)
 
-router.post("/create" , CategoryController.addCategory)
 /**
  * @swagger
  * /admin/category/parents:
@@ -93,7 +94,6 @@ router.post("/create" , CategoryController.addCategory)
 
 
 router.get("/parents" , CategoryController.getParents)
-router.post("/update" , CategoryController.updateCategory)
 /**
  * @swagger
  * /admin/category/remove/{id}:
@@ -139,7 +139,30 @@ router.delete("/remove/:id" , CategoryController.deleteCategory)
 
 router.get("/" , CategoryController.getAllCategories)
 router.get("/getAllHeads" , CategoryController.getAllHeads)
-router.get("/categoryById/:id" , CategoryController.getCategoryById)
+/**
+ * @swagger
+ * /admin/category/{id}:
+ *   get:
+ *     summary: get category by id
+ *     tags: 
+ *       - Admin Categories
+ *     description: get category by id
+ *     parameters:
+ *          -   in : path
+ *              name : id
+ *              required : true
+ *              type : string
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/:id" , CategoryController.getCategoryById)
 /**
  * @swagger
  * /admin/category/children/{parent}:

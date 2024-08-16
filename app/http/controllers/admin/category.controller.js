@@ -2,9 +2,9 @@ const createError = require("http-errors");
 const { CategoryModel } = require("../../../models/categories");
 const Contoller = require("../controllers")
 const {categorySchema} = require("../../validators/admin/category.schema");
-const { date } = require("@hapi/joi/lib/template");
+const mongoose  = require("mongoose");
 class CategoryController extends Contoller{
-  async  addCategory(req , res , next){
+    async  addCategory(req , res , next){
         try {
             await categorySchema.validateAsync(req.body)
             const {title , parent} = req.body;
@@ -19,22 +19,24 @@ class CategoryController extends Contoller{
             next(error)
         }
     }
-    updateCategory(req , res , next){
+    async updateCategory(req , res , next){
         try {
             
         } catch (error) {
             next(error)
         }
     }
-    async deleteCategory(req , res , next){
+    async deleteCategory(req , res , next){ 
         try {
-            console.log("req.params" , req.params)
+            
             const {id} = req.params
-            const category = await this.checkCategoryExists(id);
-            console.log("category" , category)
-
-            const deleteCategory = await CategoryModel.deleteOne({_id : id})
-            console.log("deleteCategory" , deleteCategory)
+            const category =  await this.checkCategoryExists(id);
+            console.log("category " , category)
+            const deleteCategory = await CategoryModel.deleteMany({
+                $or : [
+                     {_id : category._id},
+                     {parent : category._id}
+            ]})
             if( deleteCategory.deletedCount == 0) throw createError(500 , "delete was not successfull");
             res.status(200).json({
                 data : {
@@ -46,7 +48,7 @@ class CategoryController extends Contoller{
             next(error)
         } 
     }
-   async getParents(req , res , next){
+    async getParents(req , res , next){
         try {
             const parents =  await CategoryModel.find({parent : undefined} , {__v : 0});
             return res.status(200).json({
@@ -61,7 +63,69 @@ class CategoryController extends Contoller{
     }
     async getAllCategories(req , res , next){
         try {
+            // const category = await CategoryModel.aggregate([
+            //     {
+            //         $lookup:{
+            //             from : "categories",
+            //             localField : "_id",
+            //             foreignField : "parent" ,
+            //             as : "children"
+            //         }
+            //     },
+            //     {
+            //         $project :{ 
+            //             __v : 0,
+            //         "children.__v" : 0 ,
+            //         "children.parent" : 0
+            //         } 
+            //     }, 
+            //     {
+            //         $match : {
+            //             parent : undefined
+            //         }
+            //     }
+            // ]);
             const category = await CategoryModel.aggregate([
+                {
+                    $graphLookup:{
+                        from : "categories",
+                        startWith :"$_id",
+                        connectFromField : "_id" ,
+                        connectToField : "parent",
+                        maxDepth : 5,
+                        depthField : "depth",
+                        as : "children"
+                    }
+                },
+                {
+                    $project :{ 
+                        __v : 0,
+                    "children.__v" : 0 ,
+                    "children.parent" : 0
+                    } 
+                }, 
+                {
+                    $match : {
+                        parent : undefined
+                    }
+                }
+            ]);
+            return res.status(200).json({
+                data : {
+                    category
+                }
+            })
+        } catch (error) {
+            next(error)
+        }
+    }
+    async getCategoryById(req , res , next){
+        try {
+             const {id} = req.params
+              const category = await CategoryModel.aggregate([
+                {
+                    $match : {_id :new  mongoose.Types.ObjectId(id)}
+                },
                 {
                     $lookup:{
                         from : "categories",
@@ -78,23 +142,17 @@ class CategoryController extends Contoller{
                     } 
                 }
             ]);
-            return res.status(200).json({
+            return res.status(201).json({
                 data : {
                     category
                 }
             })
-        } catch (error) {
-            next(error)
-        }
-    }
-    getCategoryById(req , res , next){
-        try {
             
         } catch (error) {
             next(error)
         }
     }
-    getAllHeads(req , res , next){
+    async getAllHeads(req , res , next){
         try {
             
         } catch (error) {
@@ -119,7 +177,7 @@ class CategoryController extends Contoller{
         console.log("ID" , id)
         const category = await CategoryModel.findById({_id : id});
         if(!category) throw createError(404 , "category not found");
-        return !!category
+        return category
     }
 
 }
