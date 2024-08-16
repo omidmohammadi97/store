@@ -72,12 +72,98 @@ const router = require("express").Router();
 
 
 router.post("/create" , CategoryController.addCategory)
+/**
+ * @swagger
+ * /admin/category/parents:
+ *   get:
+ *     summary: get all parents
+ *     tags: 
+ *       - Admin Categories
+ *     description: get all parents
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+
+
+router.get("/parents" , CategoryController.getParents)
 router.post("/update" , CategoryController.updateCategory)
-router.delete("/delete/:id" , CategoryController.deleteCategory)
+/**
+ * @swagger
+ * /admin/category/remove/{id}:
+ *   delete:
+ *     summary: delete category by id
+ *     tags: 
+ *       - Admin Categories
+ *     description: delete category by id
+ *     parameters:
+ *          -   in : path
+ *              name : id
+ *              required : true
+ *              type : string
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.delete("/remove/:id" , CategoryController.deleteCategory)
+/**
+ * @swagger
+ * /admin/category:
+ *   get:
+ *     summary: get all categories
+ *     tags: 
+ *       - Admin Categories
+ *     description: get all categories
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+
 router.get("/" , CategoryController.getAllCategories)
 router.get("/getAllHeads" , CategoryController.getAllHeads)
 router.get("/categoryById/:id" , CategoryController.getCategoryById)
-router.get("/getChildOfParents/:id" , CategoryController.getChildsOfParents)
+/**
+ * @swagger
+ * /admin/category/children/{parent}:
+ *   get:
+ *     summary: get all children parent
+ *     tags: 
+ *       - Admin Categories
+ *     parameters : 
+ *           -  in : path
+ *              name : parent
+ *              type : string
+ *              required : true
+ *     description: get all children parent
+ *     responses:
+ *       201:
+ *         description: Success
+ *       400:
+ *         description: Bad request
+ *       401: 
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/children/:parent" , CategoryController.getChildsOfParents)
 
 
 module.exports = {
