@@ -41,23 +41,23 @@ const router = require("express").Router();
 router.post("/create" , CategoryController.addCategory)
 /**
  * @swagger
- * /admin/category/update:
- *   post:
+ * /admin/category/update/{id}:
+ *   patch:
  *     summary: upadte  catgeory
  *     tags: 
  *       - Admin Categories
  *     description: update  category from admin pannel
  *     parameters: 
- *       - name: title
- *         in: formData
- *         description: Title of category
- *         required: true
+ *       - name: id
+ *         in: path
+ *         description: id of category
+ *         required: true 
  *         schema:
  *           type: string
- *       - name: parent
+ *       - name: title
  *         in: formData
- *         description: parent of category
- *         required: false
+ *         description: title of category
+ *         required: true
  *         schema:
  *           type: string
  *     responses:
@@ -71,7 +71,7 @@ router.post("/create" , CategoryController.addCategory)
  *         description: Internal server error
 */
 
-router.post("/update" , CategoryController.updateCategory)
+router.patch("/update/:id" , CategoryController.updateCategory)
 
 /**
  * @swagger
