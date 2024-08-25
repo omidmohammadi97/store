@@ -1,14 +1,29 @@
 const createError = require("http-errors");
 const { BlogModel } = require("../../../models/blogs");
 const controller = require("../controllers");
-const { date } = require("@hapi/joi/lib/template");
-
+const { creatBlogSchmea } = require("../../validators/admin/blog.schema");
+const path = require("path")
+const {deleteFileInPublic} = require("../../../utils/functions")
 class BlogController extends controller{
     async createBlog(req , res ,next) {
-        try {
+        try {            
+            const blogDataBody =  await creatBlogSchmea.validateAsync(req.body);
+            req.body.image = path.join(blogDataBody.fileUploadPath , blogDataBody.filename)
+            const image = req.body.image;
+            req.body.image = req.body.image.replace(/\\/g ,"/");
+
+            const {title  , short_text  , content , tags , category } = blogDataBody;
+            const blog = await BlogModel.create({title  , short_text  , content , tags , category , image});
+            return res.json({
+                blog,
+                blogDataBody , 
+                image :  req.body.image
+            })
             
         } catch (error) {
-            
+            console.log(error)
+            deleteFileInPublic(req.file.path.replace(/^.*public[\\/]/, ''))
+            next(error)
         }
     }
     async getById(req , res ,next) {

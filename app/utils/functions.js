@@ -2,7 +2,9 @@ const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const { userModel } = require("../models/users");
 const { ACCESS_TOKEN_SECRET_KEY, REFRESH_TOKEN_SECRET_KEY } = require("./constans");
-const { reject } = require("bcrypt/promises");
+// const fs = require("file-system");
+const fs = require('fs'); 
+const path = require('path');
 const redisClient = require("./init_redis");
 function randomNumber(){
     return Math.floor(Math.random() * 9000) + 10000
@@ -59,9 +61,15 @@ async function VerifyRefreshToken(token){
     })
 
 }
+function deleteFileInPublic(fileAddress){
+    console.log(fileAddress)
+    const pathFile = path.join(__dirname  ,"..","..","public", fileAddress)
+    fs.unlinkSync(pathFile);
+}
 module.exports = {
     randomNumber,
     signAccessToken,
     signRefreshToken,
-    VerifyRefreshToken
+    VerifyRefreshToken,
+    deleteFileInPublic
 }
