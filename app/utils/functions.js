@@ -33,13 +33,12 @@ async function  signRefreshToken(userId){
         const payload = {
             mobile : user.mobile,
         };
-        const secret ="";
         const options = {
             expiresIn : "1y"
         };
         jwt.sign(payload , REFRESH_TOKEN_SECRET_KEY , options ,async (err , token)=>{
             if(err) reject(createError(500 , " internal server error" ));
-            await redisClient.SETEX(userId , (360 * 24*60*60) , token)
+            await redisClient.SETEX(userId.toString() , (360 * 24*60*60) , token)
             resolve(token)
         })
 
@@ -62,9 +61,11 @@ async function VerifyRefreshToken(token){
 
 }
 function deleteFileInPublic(fileAddress){
-    console.log(fileAddress)
-    const pathFile = path.join(__dirname  ,"..","..","public", fileAddress)
-    fs.unlinkSync(pathFile);
+    if(fileAddress){
+        const pathFile = path.join(__dirname  ,"..","..","public", fileAddress)
+        if(fs.existSync(pathFile)) fs.unlinkSync(pathFile);   
+    }
+
 }
 module.exports = {
     randomNumber,

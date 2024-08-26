@@ -53,7 +53,7 @@ module.exports = new class authConrtoller extends controller{
          if(!user) throw  createError(404 , "user not found")
 
          if(user.otp.code != parseInt(code) ) throw  createError(401 ,"unauthorized error")
-         const now = Date.now();
+         const now = Date().now;
          if(user.otp.expiresIn < now) throw createError(401, "The code has expired");
          const accessToken = await signAccessToken(user._id)
          const refreshToken = await signRefreshToken(user._id)
@@ -72,7 +72,7 @@ module.exports = new class authConrtoller extends controller{
    saveUser = async (mobile , code) => { 
       let otp = {
          code ,
-         expiresIn : new Date.now() + 120000
+         expiresIn : new Date().now + 120000
       }
       console.log("otp" , otp)
       const user = await this.checkExistUser(mobile)
