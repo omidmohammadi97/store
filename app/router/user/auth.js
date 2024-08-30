@@ -1,6 +1,8 @@
 const authController = require("../../http/controllers/user/auth/auth.controller");
 const router = require("express").Router();
 
+
+
 /**
  * @swagger
  * tags:
@@ -16,13 +18,21 @@ const router = require("express").Router();
  *     tags: 
  *       - Auth
  *     description: One-time password login
- *     parameters: 
- *       - name: mobile
- *         in: formData
- *         description: fa_IR phone number
- *         required: true
- *         schema:
- *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               mobile:
+ *                 type: string
+ *         application/x-www-form-urlencoded:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               mobile:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Success
@@ -33,6 +43,7 @@ const router = require("express").Router();
  *       500:
  *         description: Internal server error
  */
+
 /**
  * @swagger
  * /user/checkOtp:
@@ -41,19 +52,24 @@ const router = require("express").Router();
  *     tags: 
  *       - Auth
  *     description: check otp
- *     parameters: 
- *       - name: mobile
- *         in: formData
- *         description: fa_IR phone number
- *         required: true
- *         schema:
- *           type: string
- *       - name: code
- *         in: formData
- *         description: otp
- *         required: true
- *         schema:
- *           type: number
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               mobile:
+ *                 type: string
+ *               code :
+ *                 type: string
+ *         application/x-www-form-urlencoded:
+ *             type: object
+ *             properties:
+ *               mobile:
+ *                 type: string
+ *               code :
+ *                 type: string
  *     responses:
  *       201:
  *         description: Success
@@ -72,13 +88,19 @@ const router = require("express").Router();
  *     tags: 
  *       - Auth
  *     description: refresh Token
- *     parameters: 
- *       - name: refreshToken
- *         in: body
- *         description: refreshToken
- *         required: true
- *         schema:
- *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *             type: object
+ *             properties:
+ *               refreshToken :
+ *                   type: string
+ *         application/x-www-form-urlencoded:
+ *             type: object
+ *             properties:
+ *               refreshToken :
+ *                   type: string
  *     responses:
  *       201:
  *         description: Success

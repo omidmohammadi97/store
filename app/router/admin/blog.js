@@ -1,7 +1,8 @@
 const {BlogController} = require("../../http/controllers/admin/blog.controller");
 const StringToArray = require("../../http/middlewares/stringToArray");
 const uploadFile = require("../../utils/multer");
-const {VerifyAccessToken} = require("../../http/middlewares/verifayAccessToken")
+const {VerifyAccessToken} = require("../../http/middlewares/verifayAccessToken");
+const { VerifyRefreshToken } = require("../../utils/functions");
 const router = require("express").Router();
 /**
  * @swagger
@@ -16,12 +17,6 @@ const router = require("express").Router();
  *     summary: get all blogs
  *     tags: 
  *       - Admin Blogs
- *     parameters:
- *          - in : header
- *            name : accesstoken
- *            type : string
- *            required : true
- *            value : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTEzNDQyMzEyNCIsImlhdCI6MTcyNDYwODY3NCwiZXhwIjoxNzI0NjEyMjc0fQ.dW7TkQe2Opu7XjZUbvnATzsj4hYNLuFXxkfXqlMcn4w
  *     responses:
  *       201:
  *         description: Success
@@ -32,7 +27,7 @@ const router = require("express").Router();
  *       500:
  *         description: Internal server error
 */
-router.get("/" , BlogController.getList)
+router.get("/" ,BlogController.getList)
 /**
  * @swagger
  * /admin/blogs/{id}:
@@ -40,16 +35,17 @@ router.get("/" , BlogController.getList)
  *     summary: get all blogs
  *     tags: 
  *       - Admin Blogs
- *     parameters:
- *          - in : header
- *            name : accesstoken
- *            type : string
- *            required : true
- *            value : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTEzNDQyMzEyNCIsImlhdCI6MTcyNDYwODY3NCwiZXhwIjoxNzI0NjEyMjc0fQ.dW7TkQe2Opu7XjZUbvnATzsj4hYNLuFXxkfXqlMcn4w
- *          - in : path
- *            name : id
- *            type : string
- *            required : true
+ *     content:
+ *         application/json:
+ *             type: object
+ *             properties:
+ *               id :
+ *                   type: string
+ *         application/x-www-form-urlencoded:
+ *             type: object
+ *             properties:
+ *               id :
+ *                   type: string       
  *     responses:
  *       201:
  *         description: Success
@@ -68,39 +64,31 @@ router.get("/:id" , BlogController.getById)
  *     summary:  create a new blog
  *     tags: 
  *       - Admin Blogs
- *     consumer :
- *             - multipart/form-data
- *     parameters:
- *          - in : header
- *            name : accesstoken
- *            type : string
- *            required : true
- *            value : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTEzNDQyMzEyNCIsImlhdCI6MTcyNDYwODY3NCwiZXhwIjoxNzI0NjEyMjc0fQ.dW7TkQe2Opu7XjZUbvnATzsj4hYNLuFXxkfXqlMcn4w
- *          - in : formData
- *            name : title
- *            required : true
- *            type: string
- *          - in : formData
- *            name : short_text
- *            required : true
- *            type: string
- *          - in : formData
- *            name : content
- *            required : true
- *            type: string
- *          - in : formData
- *            name : tags
- *            required : true
- *            type: string
- *            example : tag1#tag2#tag3
- *          - in : formData
- *            name : category
- *            required : true
- *            type: string
- *          - in : formData
- *            name : image
- *            required : false
- *            type: file
+ *     requestBody:
+ *       required: true
+ *     content :
+ *       application/json:
+ *             schema:
+ *             type: object
+ *             properties :
+ *                title :
+ *                  type: string
+ *                  required: true
+ *                short_text :
+ *                  type : string
+ *                  required: true
+ *                content :
+ *                  type : string
+ *                  required: true
+ *                tags :
+ *                  type: string
+ *                  required: true
+ *                category :
+ *                  type: string
+ *                  required: true 
+ *                image : 
+ *                  type : file
+ *           
  *     responses:
  *       201:
  *         description: Success
@@ -190,7 +178,7 @@ router.delete("/:id" , BlogController.deleteById)
  *       500:
  *         description: Internal server error
 */
-router.patch("/update/:id" ,VerifyAccessToken ,  StringToArray("tags"),BlogController.updateById)
+router.patch("/update/:id" ,  StringToArray("tags"),BlogController.updateById)
 
 module.exports = {
     blogRouter : router

@@ -7,6 +7,7 @@ const swaggerUI = require("swagger-ui-express")
 const swaggerJSDOC = require("swagger-jsdoc")
 const createError = require("http-errors")
 const { description } = require("@hapi/joi/lib/schemas")
+const { type } = require("express/lib/response")
  module.exports =  class application{
     #app = express();
     #DB_URI;
@@ -28,23 +29,40 @@ const { description } = require("@hapi/joi/lib/schemas")
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extends : true}))
         this.#app.use(express.static(path.join(__dirname , '..', 'public')))
-        this.#app.use("/apis" , swaggerUI.serve , swaggerUI.setup(swaggerJSDOC({
-            swaggerDefinition : {
-                info :{
-                    title : "store apis",
-                    version : "2.0.0.0",
-                    description : "test apis for store project"
+        this.#app.use("/apis", 
+            swaggerUI.serve, 
+            swaggerUI.setup(swaggerJSDOC({
+              swaggerDefinition: {
+                openapi: "3.0.0",
+                info: {
+                  title: "Store APIs",
+                  version: "2.0.0",
+                  description: "Test APIs for the store project"
                 },
-                servers : [
-                    {
-                        url : "http://localhost:5000"
+                servers: [
+                  {
+                    url: "http://localhost:5000"
+                  }
+                ],
+                components: {
+                  securitySchemes: {
+                    BearerAuth: {
+                      type: "http",
+                      scheme: "bearer",
+                      bearerFormat: "JWT" // Fixed typo: "bearerFortmat" to "bearerFormat"
                     }
+                  }
+                },
+                security: [ // Fixed typo: "securtity" to "security"
+                  {
+                    BearerAuth: []
+                  }
                 ]
-            },
-            apis : ["./app/router/*/*.js"]
-        })))
-
-    }
+              },
+              apis: ["./app/router/*/*.js"]
+            }), 
+            { explorer: true } // Fixed typo: "explorer" was correct but formatted differently for clarity
+          ))};
 
     createServer(){
         const http = require("http");

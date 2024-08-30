@@ -42,15 +42,19 @@ class BlogController extends controller{
     }
     async getList(req , res ,next) {
         try {
+            console.log("HHEHEHEH");
+            
             const blogs = await BlogModel.aggregate([
                 {$match : {}},
-                {$lookup : {
+                {$lookup : 
+                    {
                     from : "users",
                     localField : "author",
                     foreignField : "_id",
                     as : "author"
                 }},
-                {$lookup : {
+                {$lookup :
+                     {
                     from : "categories",
                     localField : "category",
                     foreignField : "_id",
