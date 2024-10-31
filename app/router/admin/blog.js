@@ -1,5 +1,5 @@
 const {BlogController} = require("../../http/controllers/admin/blog.controller");
-const StringToArray = require("../../http/middlewares/stringToArray");
+const {stringToArray} = require("../../http/middlewares/stringToArray");
 const uploadFile = require("../../utils/multer");
 const {VerifyAccessToken} = require("../../http/middlewares/verifayAccessToken");
 const { VerifyRefreshToken } = require("../../utils/functions");
@@ -99,7 +99,7 @@ router.get("/:id" , BlogController.getById)
  *       500:
  *         description: Internal server error
 */
-router.post("/add" ,VerifyAccessToken , uploadFile.single("image"), StringToArray("tags"),BlogController.createBlog)
+router.post("/add" ,VerifyAccessToken , uploadFile.single("image"), stringToArray("tags"),BlogController.createBlog)
 /**
  * @swagger
  * /admin/blogs/{id}:
@@ -130,44 +130,35 @@ router.post("/add" ,VerifyAccessToken , uploadFile.single("image"), StringToArra
 router.delete("/:id" , BlogController.deleteById)
 /**
  * @swagger
- * /admin/blogs/update/:id:
+ * /admin/blogs/update/{id}:
  *   patch:
- *     summary:  update  blog
+ *     summary: Update blog
  *     tags: 
  *       - Admin Blogs
- *     consumer :
- *             - multipart/form-data
  *     parameters:
- *          - in : header
- *            name : accesstoken
- *            type : string
- *            required : true
- *            value : Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtb2JpbGUiOiIwOTEzNDQyMzEyNCIsImlhdCI6MTcyNDYwODY3NCwiZXhwIjoxNzI0NjEyMjc0fQ.dW7TkQe2Opu7XjZUbvnATzsj4hYNLuFXxkfXqlMcn4w
- *          - in : path
- *            name : id
- *            type : string
- *            required : true
- *          - in : formData
- *            name : title
- *            type: string
- *          - in : formData
- *            name : short_text
- *            type: string
- *          - in : formData
- *            name : content
- *            type: string
- *          - in : formData
- *            name : tags
- *            type: string
- *            example : tag1#tag2#tag3
- *          - in : formData
- *            name : category
- *            required : true
- *            type: string
- *          - in : formData
- *            name : image
- *            required : false
- *            type: file
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The ID of the blog to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               short-text:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               tags:
+ *                 type: string
+ *               category:
+ *                 type: string
  *     responses:
  *       201:
  *         description: Success
@@ -177,8 +168,8 @@ router.delete("/:id" , BlogController.deleteById)
  *         description: Unauthorized
  *       500:
  *         description: Internal server error
-*/
-router.patch("/update/:id" ,  StringToArray("tags"),BlogController.updateById)
+ */
+router.patch("/update/:id" ,  stringToArray("tags"),BlogController.updateById)
 
 module.exports = {
     blogRouter : router

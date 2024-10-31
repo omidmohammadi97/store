@@ -2,7 +2,6 @@ const multer = require("multer");
 const fs = require("fs");
 const path = require("path");
 const createError = require("http-errors");
-const { status } = require("express/lib/response");
 function createRoute(req){
     const date = new Date();
     const year = date.getFullYear().toString();
@@ -42,7 +41,7 @@ function filterUploads(req , file ,cb){
     }
     return cb(createError(504 , "file is not valid"))
 }
-const maxSize = 1 * 100 *100 //1MB
+const maxSize = 1000000 //1MB
 const uploadFile = multer({
     storage,filterUploads , limits  : {fileSize : maxSize}
 })

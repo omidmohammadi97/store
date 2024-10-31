@@ -6,7 +6,7 @@ const { request } = require("express");
 
 function getToken(headers){
     const [bearer , token] = headers?.authorization?.split(" ") || [];
-    console.log("headers",headers);
+    // console.log("headers",headers);
     
     if(token && bearer?.toLowerCase() == "bearer") return {token , bearer};
     throw createError(503,"your token is not valid")

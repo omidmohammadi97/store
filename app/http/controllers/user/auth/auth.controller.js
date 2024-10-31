@@ -70,9 +70,10 @@ module.exports = new class authConrtoller extends controller{
        }
     }
    saveUser = async (mobile , code) => { 
+      console.log("new Date().now" ,  Date.now() )
       let otp = {
          code ,
-         expiresIn : new Date().now + 120000
+         expiresIn :  Date.now() + 120000
       }
       console.log("otp" , otp)
       const user = await this.checkExistUser(mobile)

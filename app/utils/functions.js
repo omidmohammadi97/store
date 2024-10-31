@@ -61,13 +61,26 @@ async function VerifyRefreshToken(token){
 
 }
 function deleteFileInPublic(fileAddress){
-    if(fileAddress){
-        const pathFile = path.join(__dirname  ,"..","..","public", fileAddress)
-        if(fs.existSync(pathFile)) fs.unlinkSync(pathFile);   
+    try {
+        if(fileAddress){
+            const pathFile = path.join(__dirname  ,"..","..","public", fileAddress)
+            if(fs.existSync(pathFile)) fs.unlinkSync(pathFile);   
+        }
+    
+    } catch (error) {
+        throw error
     }
 
 }
+function listOfImagesFromRequest(files , fileUploadPath){
+    if(files?.length >0){
+        return (files.map(file => path.join( fileUploadPath , file.filename))).map(item => item.replace(/\\/g ,"/"))
+    }else{
+        return []
+    }
+}
 module.exports = {
+    listOfImagesFromRequest,
     randomNumber,
     signAccessToken,
     signRefreshToken,

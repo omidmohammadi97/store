@@ -1,12 +1,6 @@
-const { Schema, default: mongoose, Types } = require("mongoose");
-const Joi = require("@hapi/joi");
+const { default: mongoose, Types } = require("mongoose");
+const {commnetSchema} = require("./public.schema")
 
-const commnetSchema =new mongoose.Schema({
-    user : {type : Types.ObjectId , ref : "user" , required : true },
-    comment : {type : String,  required : true },
-    createdAt : {type : Date , default : new Date().now },
-    parent : {type : Types.ObjectId },
-})
 
 const blogSchema = new mongoose.Schema({
     author : {type : Types.ObjectId , required : true, ref : "user"},
