@@ -27,9 +27,9 @@ class CategoryController extends Contoller{
             await categorySchemaUpdate.validateAsync(req.body)
             const resultUpdate = await CategoryModel.updateOne({_id : id} , {title})
             if(resultUpdate.modifiedCount == 0) throw createError(500 , "update was not successful")
-            res.status(200).json({
+            res.status(httpStatus.OK).json({
                 data :{
-                    statusCode : 200,
+                    statusCode : httpStatus.OK,
                     message : "update was successful"
                 }
             })
@@ -49,9 +49,9 @@ class CategoryController extends Contoller{
                      {parent : category._id}
             ]})
             if( deleteCategory.deletedCount == 0) throw createError(500 , "delete was not successfull");
-            res.status(200).json({
+            res.status(httpStatus.OK).json({
                 data : {
-                    statusCode : 201,
+                    statusCode : httpStatus.OK,
                     message : "delete was successfully"
                 }
             })
@@ -122,7 +122,7 @@ class CategoryController extends Contoller{
             //     }
             // ]);
             const categories = await CategoryModel.find({parent : undefined})
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data : {
                     categories
                 }
@@ -154,7 +154,7 @@ class CategoryController extends Contoller{
                     } 
                 }
             ]);
-            return res.status(201).json({
+            return res.status(httpStatus.OK).json({
                 data : {
                     category
                 }
@@ -175,7 +175,7 @@ class CategoryController extends Contoller{
         try {
             const {parent}  =  req.params;
             const children = await CategoryModel.find({parent} , {__V : 0})
-            return res.status(200).json({
+            return res.status(httpStatus.OK).json({
                 data : {
                     children
                 }

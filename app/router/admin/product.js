@@ -2,7 +2,24 @@ const { ProductController } = require("../../http/controllers/admin/product.cont
 const {stringToArray} = require("../../http/middlewares/stringToArray")
 const uploadFile = require("../../utils/multer");
 const router = require("express").Router();
-
+/**
+ * @swagger
+ *  components:
+ *      schemas:
+ *          Color:
+ *              type: array
+ *              items: 
+ *                  type: string
+ *                  enum:
+ *                      -   black
+ *                      -   white
+ *                      -   gray                
+ *                      -   red
+ *                      -   blue
+ *                      -   green
+ *                      -   orange
+ *                      -   purple
+ */ 
 /**
  * @swagger
  * components:
@@ -54,6 +71,55 @@ const router = require("express").Router();
  *         length:
  *           type: string
  *           description: The length of product
+ *         colors:
+ *           $ref: '#/components/schemas/Color'
+ */
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     Product-edit:
+ *       type: object
+ *       properties:
+ *         title:
+ *           type: string
+ *           description: The title of the product
+ *         shortDesc:
+ *           type: string
+ *           description: The short description of the product
+ *         fullDesc:
+ *           type: string
+ *           description: The full description of the product
+ *         tags:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: Tags associated with the product
+ *         images:
+ *           type: array
+ *           items:
+ *              type: string
+ *              format : binary
+ *         category:
+ *           type: string
+ *           description: The category of the product
+ *         price:
+ *           type: integer
+ *           description: The price of the product
+ *         height:
+ *           type: string
+ *           description: The height of product
+ *         wieght:
+ *           type: string
+ *           description: The wieght of product
+ *         width:
+ *           type: string
+ *           description: The width of product
+ *         length:
+ *           type: string
+ *           description: The length of product
+ *         colors:
+ *           $ref: '#/components/schemas/Color'
  */
 
 /**
@@ -83,6 +149,11 @@ router.post("/add", uploadFile.array("images" , 10), stringToArray("tags"), Prod
  *   get:
  *     tags: [Admin Product]
  *     summary: Get all products
+ *     parameters:
+ *          - in : query 
+ *            name : search
+ *            type : string
+ *            description : text for search in title 
  *     responses:
  *       201:
  *         description: Get all products
@@ -126,7 +197,33 @@ router.get("/:id", ProductController.getOneProduct);
  *         description: Delete One product
  */
 router.delete("/remove/:id", ProductController.deleteOneProduct);
-
+/**
+ * @swagger
+ * /admin/products/edit/{id}:
+ *   post:
+ *     tags: [Admin Product]
+ *     summary: Edit product
+ *     parameters:
+ *            - in: path
+ *              name: id
+ *              type : string
+ *              required: true
+ *              description: ObjectId of the product
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             $ref: '#/components/schemas/Product-edit'
+ *     responses:
+ *       201:
+ *         description: Edit product
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/definitions/publicDefinition'
+ */
+router.post("/edit/:id", uploadFile.array("images" , 10), stringToArray("tags"), ProductController.editProduct);
 module.exports = {
   AdminApiProductRouter: router,
 };

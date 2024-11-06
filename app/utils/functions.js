@@ -79,11 +79,35 @@ function listOfImagesFromRequest(files , fileUploadPath){
         return []
     }
 }
+
+function copyObject(object){
+    return JSON.parse(JSON.stringify(object))
+}
+function setFeatures(body){
+    const {color, width, height , length , wieght} = body;
+
+    let features = {};
+    features.colors = colors
+    if(width || height || wieght || length){
+
+        if(!width) features.width = 0;
+        else features.width = width
+        if(!height) features.height = 0;
+        else features.height = height
+        if(!wieght) features.wieght = 0;
+        else features.wieght = wieght
+        if(!length) features.length = 0;
+        else features.length = length
+    } 
+    return features;
+}
 module.exports = {
     listOfImagesFromRequest,
     randomNumber,
     signAccessToken,
     signRefreshToken,
     VerifyRefreshToken,
-    deleteFileInPublic
+    deleteFileInPublic,
+    copyObject,
+    setFeatures
 }
