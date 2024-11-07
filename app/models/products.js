@@ -4,7 +4,7 @@ const productSchema = new mongoose.Schema({
     title : { type : String , required : true},
     shortDesc : { type : String , required : true},
     fullDesc : { type : String , required : true},
-    images : { type : [String] , required : true, default : []},
+    images : {type: [String], required : false},
     tags : {type : [String] , default : [] ,  required : true},
     category : { type : Types.ObjectId ,  ref:"category" , required : true},
     comments : { type : [], required : true},
@@ -25,7 +25,6 @@ const productSchema = new mongoose.Schema({
         width : "",
         weight : "",
         colors : [],
-        model : [],
         madein : "",
     } },
 

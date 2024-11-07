@@ -2,6 +2,8 @@ const createError = require("http-errors");
 const { BlogModel } = require("../../../models/blogs");
 const controller = require("../controllers");
 const { creatBlogSchmea } = require("../../validators/admin/blog.schema");
+const {StatusCodes :httpStatus } = require("http-status-codes")
+
 const path = require("path")
 const {deleteFileInPublic} = require("../../../utils/functions")
 class BlogController extends controller{
@@ -124,7 +126,7 @@ class BlogController extends controller{
             Object.keys(data).forEach(key => {
                 if(blackList.includes(key)) delete data[key]
                 if(typeof data[key] == "string") data[key] = data[key].trim();
-                if(Array.isArray(data[key]) && Array.length > 0) data[key] = data[key].map(item => item.trim());
+                if(Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim());
                 if(nullish.includes(data[key])) delete data[key] 
             })
 

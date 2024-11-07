@@ -15,8 +15,8 @@ function getToken(headers){
 function VerifyAccessToken(req , res ,next){
     try {
         const {token , bearer} = getToken(req.headers);
-        console.log("bearer", bearer)
-        console.log("token", token)
+        // console.log("bearer", bearer)
+        // console.log("token", token)
     
         if(token && bearer?.toLowerCase() == "bearer"){
             jwt.verify(token , ACCESS_TOKEN_SECRET_KEY , async (err , payload)=>{

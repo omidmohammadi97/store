@@ -10,6 +10,7 @@ const creatProductSchmea = Joi.object({
     width : Joi.number().empty().allow(null , 0 , "0", "").error(new Error("inccorect width number format")),
     wieght : Joi.number().empty().allow(null , 0 , "0", "").error(new Error("inccorect wieght number f ormat")),
     length : Joi.number().empty().allow(null , 0 , "0", "").error(new Error("inccorect length number format")),
+    colors: Joi.array().min(0).max(20).error(new Error("رنگ های انتخابی  نمیتواند بیشتر از 20 ایتم باشد")),
     filename: Joi.string().pattern(/\.(png|jpg|jpeg|gif)$/i).error(new Error("Invalid image")),
     tags : Joi.array().min(0).max(20).error(new Error("tags must between 0 and 20 characters")),
     category : Joi.string().error(new Error("category is not valid")),

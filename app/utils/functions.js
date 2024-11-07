@@ -81,10 +81,10 @@ function listOfImagesFromRequest(files , fileUploadPath){
 }
 
 function copyObject(object){
-    return JSON.parse(JSON.stringify(object))
+    return JSON.parse(JSON.stringify(object)) 
 }
 function setFeatures(body){
-    const {color, width, height , length , wieght} = body;
+    const {colors, width, height , length , wieght} = body;
 
     let features = {};
     features.colors = colors

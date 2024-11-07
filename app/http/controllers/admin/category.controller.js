@@ -3,6 +3,8 @@ const { CategoryModel } = require("../../../models/categories");
 const Contoller = require("../controllers")
 const {categorySchema, categorySchemaUpdate} = require("../../validators/admin/category.schema");
 const mongoose  = require("mongoose");
+const {StatusCodes :httpStatus } = require("http-status-codes")
+
 class CategoryController extends Contoller{
     async  addCategory(req , res , next){
         try {

@@ -11,14 +11,15 @@ const {StatusCodes :httpStatus } = require("http-status-codes")
 class ProductController extends Contoller{
     async AddProduct(req , res ,next){
         try {
-            console.log(req.body)
             const images = listOfImagesFromRequest(req?.files || [] , req.fileUploadPath)
+            console.log(req.body) 
             const productBody = await creatProductSchmea.validateAsync(req.body)
             const supplier = req.user._id
-            const {title  , shortDesc  , fullDesc , tags , category , price , discount,count,height,width,wieght,length} = productBody;
-            setFeatures(req.body)
+            const {title  , shortDesc  , fullDesc , tags , category , price , discount,count , type} = productBody;
+            const features = setFeatures(req.body)
+            console.log(features)
 
-            const product = await ProductModel.create({
+           await ProductModel.create({
                 title,
                 shortDesc,
                 fullDesc,
@@ -46,7 +47,22 @@ class ProductController extends Contoller{
         try {
             const data = copyObject(req.body);
             data.images = listOfImagesFromRequest(req?.files || [] , req.fileUploadPath);
-           
+            data.features = setFeatures(req.body)
+            let nullish = ["" , " " , "0" , 0 , null , undefined]
+            let blackList = ["bookmarks" , "dislike" , "like" , "comments" , "supplier" , "width" , "height" , "weight" , "length" , "colors"]
+            Object.keys(data).forEach(key => {
+                if(blackList.includes(key)) delete data[key]
+                if(typeof data[key] == "string") data[key] = data[key].trim();
+                if(Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim());
+                if(Array.isArray(data[key]) && data[key].length == 0) delete data[key];
+                if(nullish.includes(data[key])) delete data[key] 
+            })
+           return res.status(httpStatus.OK).json({
+            data : {
+                statusCode : httpStatus.OK,
+                message : "product updated successfully"
+            }
+           })
         } catch (error) {
             console.log("error", error)
             next(error)

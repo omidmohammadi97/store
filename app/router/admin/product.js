@@ -61,16 +61,24 @@ const router = require("express").Router();
  *           description: The price of the product
  *         height:
  *           type: string
+ *           example: 0
  *           description: The height of product
  *         wieght:
  *           type: string
+ *           example: 0
  *           description: The wieght of product
  *         width:
  *           type: string
+ *           example: 0
  *           description: The width of product
  *         length:
  *           type: string
+ *           example: 0
  *           description: The length of product
+ *         type:
+ *            type: string
+ *            description: the type of product 
+ *            example: virtual - physical
  *         colors:
  *           $ref: '#/components/schemas/Color'
  */
@@ -118,6 +126,10 @@ const router = require("express").Router();
  *         length:
  *           type: string
  *           description: The length of product
+ *         type:
+ *            type: string
+ *            description: the type of product 
+ *            example: virtual - physical
  *         colors:
  *           $ref: '#/components/schemas/Color'
  */
@@ -142,7 +154,7 @@ const router = require("express").Router();
  *             schema:
  *               $ref: '#/definitions/publicDefinition'
  */
-router.post("/add", uploadFile.array("images" , 10), stringToArray("tags"), ProductController.AddProduct);
+router.post("/add", uploadFile.array("images" , 10), stringToArray("tags", "colors"), ProductController.AddProduct);
 /**
  * @swagger
  * /admin/products:
@@ -200,7 +212,7 @@ router.delete("/remove/:id", ProductController.deleteOneProduct);
 /**
  * @swagger
  * /admin/products/edit/{id}:
- *   post:
+ *   patch:
  *     tags: [Admin Product]
  *     summary: Edit product
  *     parameters:
@@ -223,7 +235,7 @@ router.delete("/remove/:id", ProductController.deleteOneProduct);
  *             schema:
  *               $ref: '#/definitions/publicDefinition'
  */
-router.post("/edit/:id", uploadFile.array("images" , 10), stringToArray("tags"), ProductController.editProduct);
+router.patch("/edit/:id", uploadFile.array("images" , 10), stringToArray("tags", "colors"), ProductController.editProduct);
 module.exports = {
   AdminApiProductRouter: router,
 };
